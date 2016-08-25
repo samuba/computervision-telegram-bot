@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parkplätze Ulm</title>
+    <meta name="description" content="Where are available parking lots in Ulm?">
+    <link id="favicon" rel="icon" href="https://cdn.hyperdev.com/us-east-1%3A9893de0d-f62f-4dbd-9b97-4d8c21f9cb2c%2Ffavicon.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+    <header>
+      <h1>Freie Parkplätze in Ulm</h1>
+    </header>
+
+    <main class="container">
+      <ul class="list-group">
+        
+      </ul>
+    </main>
+
+    <footer>
+      <a href="http://telegram.me/ParkenInUlmBot">💬 Telegram Bot</a>
+      <a href="/json">{ } JSON API</a>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+            
+    <script>
+    
+$.get('/json', (decks) => {
+  console.log("get", decks)
+  
+  decks.forEach(deck => {
+    $(".list-group").html($(".list-group").html() + '<li class="list-group-item">' + deck.name + ' <span class="badge">' + deck.free + '</span>')
+  })
+})
+
+    </script>
+
+  </body>
+</html>

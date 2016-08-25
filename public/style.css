@@ -1,0 +1,23 @@
+body h1 {
+  text-align: center; 
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+body .container {
+    max-width: 400px;
+}
+
+.list-group-item .badge {
+  font-size: 13pt;
+}
+
+footer {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 9pt;
+}
+
+footer a {
+  margin-left: 20px; 
+}

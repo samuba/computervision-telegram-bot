@@ -1,2 +1,1 @@
-# computervision-telegram-bot
-A bot that tries to understand you're pictures
+You send me pictures, I tell you what I see. Deal?
