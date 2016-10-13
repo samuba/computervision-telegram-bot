@@ -41,37 +41,77 @@ function notSupported(recipientId) {
 function answerToPicture(recipientId, imageUri) {
   bot.sendChatAction(recipientId, "typing")
   
-  analytics.getDescription(imageUri).then(x => {
-    console.log("description", x)
-    sendDescription(recipientId, x.description)
+  analytics.getDescription(imageUri).then(desc => {
+    console.log("description", desc.description.captions)
+    sendDescription(recipientId, desc.description)
     
-    analytics.getFaces(imageUri).then(x => {
-      console.log("faces", x)
-      sendFaces(recipientId, x.faces)
+    analytics.getFaces(imageUri).then(fcs => {
+      console.log("faces", fcs)
+      
+      if (fcs.faces && fcs.faces.length > 0) {
+        sendFaces(recipientId, fcs.faces)
+        
+        analytics.getEmotions(imageUri).then(emotions => {
+          console.log("emotions", emotions)
+          sendEmotions(recipientId, emotions, fcs.faces)
+        }) 
+      }
     })
+  
   }) 
 }
 
-function sendFaces(recipientId, faces) {
-  if (!faces || faces.length <= 0) {
-      return
+function sendEmotions(recipientId, emotions, faces) {
+  let finalEmotions = []
+  emotions.map(em => {
+    let ems = []
+    ems.push({ name: "angry", value: em.scores.anger })
+    ems.push({ name: "contempt", value: em.scores.contempt })
+    ems.push({ name: "disgusted", value: em.scores.disgust })
+    ems.push({ name: "in fear", value: em.scores.fear })
+    ems.push({ name: "happy", value: em.scores.happiness })
+    ems.push({ name: "neutral", value: em.scores.neutral })
+    ems.push({ name: "sad", value: em.scores.sadness })
+    ems.push({ name: "surprised", value: em.scores.surprise })
+    ems.sort((a, b) => b.value - a.value)
+    finalEmotions.push(ems[0])
+    console.log("sorted", ems)
+  })
+  
+  let answer = "I think "
+  if (faces.length == 1) {
+    answer += faces[0].gender == "Male" ? "he " : "she "
+    answer += `seems to be ${finalEmotions[0].name}.`
+  } else {
+    answer += "they seem to be "
+    finalEmotions.map(em => {
+      if (em == finalEmotions[0]){
+        answer += em.name // first element
+      } else if (em == finalEmotions[finalEmotions.length - 1]) {
+        answer += ` and ${em.name}.` // last element{
+      } else {
+        answer += ", " + em.name
+      }
+    })
   }
+  
+  bot.sendMessage(recipientId, answer);
+}
+
+function sendFaces(recipientId, faces) {
+  console.log("faces", faces)
   
   let answer = ""
   if (faces.length > 1) {
     answer = "They "
   } else {
-    if (faces[0].gender == "Male") {
-      answer = "He "
-    } else {
-      answer = "She "
-    }
+    answer = faces[0].gender == "Male" ? "He " : "She "
   }
   
   answer += "could be " 
   for(let i=0; i < faces.length; i++) {
     answer += faces[i].age
-    if (i != faces.length - 1) answer += " and " 
+    answer += i != (faces.length - 1) ? " and " : ""
   }
   
   answer += " years old."
