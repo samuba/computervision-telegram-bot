@@ -3,6 +3,17 @@ let TelegramBot = require('node-telegram-bot-api')
 let analytics = require('./analytics')
 let db = require('./database')
 let answer = require('./answer')
+let https = require('https')
+let firebase = require('firebase')
+
+firebase.initializeApp({
+  apiKey: process.env.FIREBASE_API_KEY,
+  databaseURL: process.env.FIREBASE_DB_URL,
+  //authDomain: "projectId.firebaseapp.com",
+  storageBucket: process.env.FIREBASE_STORAGE_URL
+})
+ 
+db.init(firebase)
 
 let bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {webHook: true});
 bot.setWebHook(process.env.TELEGRAM_WEBHOOK_URL)
@@ -85,7 +96,8 @@ function answerToPicture(recipient, imageUri) {
       }
     })
   
-  }) 
+  })
+  
 }
 
 module.exports = {
