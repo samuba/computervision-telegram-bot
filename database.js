@@ -26,9 +26,26 @@ module.exports = {
   },
   
   getRequests: (limit) => {
-    limit = !limit ? 8: limit
-    return db.ref("requests").limitToLast(limit).once("value")
+    return db.ref("requests").limitToLast(limit || 8).once("value")
   },
+  
+  getUsers: () => {
+    return new Promise((resolve, reject) => {
+      console.log(1)
+      db.ref("requests").once("value").then(data => {
+        let users = []
+        let requests = Object.values(data.val())
+        requests = requests.map(x => x.user)
+        requests = requests.map(x => Number.isInteger(x) ? { id: x } : x) //convert users that have not given any name
+        requests = requests.map(x => {
+          if (users.find(y => y.id == x.id)) return
+          x.calls = requests.reduce((acc, item) => item.id == x.id ? acc + 1 : acc, 0) //count all requests of this user
+          users.push(x)
+        })
+        resolve(users)
+      })
+    })
+  }, 
   
 }
 

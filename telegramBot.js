@@ -19,19 +19,32 @@ let bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {webHook: true});
 bot.setWebHook(process.env.TELEGRAM_WEBHOOK_URL)
 
 bot.on("text", (msg, match) => {
-  if (/\/start$/.exec(msg.text)) {
-    bot.sendMessage(msg.from.id, `Send me a picture (or image link) and I tell you what I see 🙈`);
-    return
-  }
   
+  // imageLink
   if (/^(http:.*)|^(https:.*)/.exec(msg.text)) {
     answerToPicture(msg.from.id, msg.text)
     return
   }
   
+  // '/start': send introduction
+  if (/\/start$/.exec(msg.text)) {
+    bot.sendMessage(msg.from.id, `Send me a picture (or image link) and I tell you what I see 🙈`);
+    return
+  }
+  
+  // '/requests': show most recent requests
   if (/\/requests/.exec(msg.text)) {
     db.getRequests().then(
-      data => bot.sendMessage(msg.from.id, JSON.stringify(data.val(), null, 2).replace(/"|,|{|}/g, '')),
+      data => bot.sendMessage(msg.from.id, prettyJsonString(data)),
+      error => bot.sendMessage(msg.from.id, error)
+    )
+    return
+  }
+  
+  // '/users': show all users
+  if (/\/users/.exec(msg.text)) {
+    db.getUsers().then(
+      users => bot.sendMessage(msg.from.id, 'unique users: ' + users.length + '\n' + prettyJsonString(users)),
       error => bot.sendMessage(msg.from.id, error)
     )
     return
@@ -55,6 +68,10 @@ bot.on('photo', (msg, match) => {
   let fileId = msg.photo[msg.photo.length - 1].file_id
   bot.getFileLink(fileId).then(imageUri => answerToPicture(msg.from, imageUri))
 });
+
+function prettyJsonString(object) {
+  return JSON.stringify(object, null, 2).replace(/"|,|{|}/g, '')
+}
 
 function notSupported(recipientId) {
   bot.sendMessage(recipientId, "I can only look at pictures 😔");
