@@ -32,22 +32,25 @@ bot.on("text", (msg, match) => {
     return
   }
   
-  // '/requests': show most recent requests
-  if (/\/requests/.exec(msg.text)) {
-    db.getRequests().then(
-      data => bot.sendMessage(msg.from.id, prettyJsonString(data)),
-      error => bot.sendMessage(msg.from.id, error)
-    )
-    return
-  }
-  
-  // '/users': show all users
-  if (/\/users/.exec(msg.text)) {
-    db.getUsers().then(
-      users => bot.sendMessage(msg.from.id, 'unique users: ' + users.length + '\n' + prettyJsonString(users)),
-      error => bot.sendMessage(msg.from.id, error)
-    )
-    return
+  // admin commands
+  if (msg.from.id == process.env.TELEGRAM_ME) {
+    // '/requests': show most recent requests
+    if (/\/requests/.exec(msg.text)) {
+      db.getRequests().then(
+        data => bot.sendMessage(msg.from.id, prettyJsonString(data)),
+        error => bot.sendMessage(msg.from.id, error)
+      )
+      return
+    }
+
+    // '/users': show all users
+    if (/\/users/.exec(msg.text)) {
+      db.getUsers().then(
+        users => bot.sendMessage(msg.from.id, 'unique users: ' + users.length + '\n' + prettyJsonString(users)),
+        error => bot.sendMessage(msg.from.id, error)
+      )
+      return
+    }
   }
   
   notSupported(msg.from.id)
