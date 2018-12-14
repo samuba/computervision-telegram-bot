@@ -68,45 +68,46 @@ function resolveGenderPlaceholders(text, gender) {
 function processEmotions(emotions) {
   let sortedEmotions = []
   emotions.map(em => {
+    const emotion = em.faceAttributes.emotion
     let ems = []
     ems.push({ 
       name: "angry", 
       singleDes: "Woah. What did you do to make <himher> so angry? 😡",
-      value: em.scores.anger 
+      value: emotion.anger 
     })
     ems.push({ 
       name: "contempt", 
       singleDesc: "Pfff. <heshe> is obiously better then you! 😒",
-      value: em.scores.contempt 
+      value: emotion.contempt 
     })
     ems.push({ 
       name: "disgusted", 
       singleDesc: "Wüah! <heshe> looks disgusted! 😖", 
-      value: em.scores.disgust
+      value: emotion.disgust
     })
     ems.push({ 
       name: "in fear", 
       singleDesc: "<heshe> is in fear. 😱 Help <himher>!", 
-      value: em.scores.fear 
+      value: emotion.fear 
     })
     ems.push({ 
       name: "happy", 
       singleDesc: "Haha. <heshe> looks happy! 😃",
-      value: em.scores.happiness })
+      value: emotion.happiness })
     ems.push({ 
       name: "neutral", 
       singleDesc: "<heshe> does not show any particular emotion. 😐", 
-      value: em.scores.neutral 
+      value: emotion.neutral 
     })
     ems.push({ 
       name: "sad", 
       singleDes: "Oh no. <heshe> he is sad. 😢",
-      value: em.scores.sadness 
+      value: emotion.sadness 
     })
     ems.push({ 
       name: "surprised", 
       singleDesc: "BOO! <heshe> is surpised! 😲",
-      value: em.scores.surprise
+      value: emotion.surprise
     })
     ems = ems.sort((a, b) => b.value - a.value)
     sortedEmotions.push(ems)

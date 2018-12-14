@@ -28,7 +28,7 @@ bot.on("text", (msg, match) => {
   
   // '/start': send introduction
   if (/\/start$/.exec(msg.text)) {
-    bot.sendMessage(msg.from.id, `Send me a picture (or image link) and I tell you what I see 🙈`);
+    bot.sendMessage(msg.from.id, `Send me a picture (or image link) and I tell you what I see 🙈 \nI understand human faces the best`);
     return
   }
   

@@ -26,11 +26,17 @@ module.exports = {
   getEmotions: (imageUrl) => {
     return request({
       method: "POST",
-      uri: "https://api.projectoxford.ai/emotion/v1.0/recognize",
-      headers: { 'Ocp-Apim-Subscription-Key': process.env.MS_EMOTION_TOKEN },
+      uri: "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect",
+      headers: { 'Ocp-Apim-Subscription-Key': process.env.MS_FACE_API_KEY },
+      qs: {
+        'returnFaceId': 'false',
+        returnFaceRectangle: 'false',
+        'returnFaceLandmarks': 'false',
+        'returnFaceAttributes': 'emotion'
+      },
       body: { url: imageUrl },
       json: true
     })
-  } 
+  },
   
 }
